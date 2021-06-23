@@ -4,6 +4,7 @@ const bodyparser = require("body-parser");
 const path = require("path");
 
 const db = require("./config/database");
+const exp = require("constants");
 
 // connecting database
 db.authenticate()
@@ -12,13 +13,23 @@ db.authenticate()
 
 const app = express();
 
+// handlebars
+app.engine("handlebars", expressHandlebars({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+// static folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// landing page
 app.get("/", (req, res) => {
-  res.json({
-    app: "CodeGig",
-    tutor: "Brad Traversy",
-    description: "Coder's job finding App",
-    motive: "Learning Sequelize ORM with PostgreSQL in NodeJS",
-  });
+  // res.json({
+  //   app: "CodeGig",
+  //   tutor: "Brad Traversy",
+  //   description: "Coder's job finding App",
+  //   motive: "Learning Sequelize ORM with PostgreSQL in NodeJS",
+  // });
+
+  res.render("index", { layout: "landing" });
 });
 
 // gig routes

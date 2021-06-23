@@ -5,24 +5,29 @@ const Gig = require("../models/Gig");
 // get gigs list
 router.get("/", async (req, res) => {
   try {
-    const gigs = await Gig.findAll();
-    console.log(gigs);
-    res.send(gigs);
+    const gigs = await Gig.findAll({ raw: true }); // throw raw data to template
+    // console.log(gigs);
+    res.render("gigs", { gigs });
   } catch (err) {
     console.log(er);
   }
 });
 
+// add gig form
+router.get("/add", (req, res) => {
+  res.render("add");
+});
+
 // add a gig
-router.get("/add", async (req, res) => {
+router.post("/add", async (req, res) => {
   try {
     const data = {
-      title: "Looking for a React developer",
-      technologies: "react,javascript,html,css",
-      budget: "$3000",
+      title: "Simple Wordpress Website",
+      technologies: "wordpress,php,html,css",
+      budget: "$1000",
       description:
         "Rump cupim pastrami bacon sirloin swine corned beef andouille ribeye tongue beef buffalo turducken pig. Shankle pastrami corned beef ham hock kielbasa. Sirloin picanha buffalo biltong pork strip steak shank turducken short loin cow. Pig short loin jerky, leberkas chuck swine brisket venison doner.",
-      contact_email: "user1@gmail.com",
+      contact_email: "user2@gmail.com",
     };
 
     let { title, technologies, budget, description, contact_email } = data;
