@@ -4,7 +4,6 @@ const bodyparser = require("body-parser");
 const path = require("path");
 
 const db = require("./config/database");
-const exp = require("constants");
 
 // connecting database
 db.authenticate()
