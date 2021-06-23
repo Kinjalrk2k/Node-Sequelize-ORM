@@ -21,27 +21,46 @@ router.get("/add", (req, res) => {
 // add a gig
 router.post("/add", async (req, res) => {
   try {
-    const data = {
-      title: "Simple Wordpress Website",
-      technologies: "wordpress,php,html,css",
-      budget: "$1000",
-      description:
-        "Rump cupim pastrami bacon sirloin swine corned beef andouille ribeye tongue beef buffalo turducken pig. Shankle pastrami corned beef ham hock kielbasa. Sirloin picanha buffalo biltong pork strip steak shank turducken short loin cow. Pig short loin jerky, leberkas chuck swine brisket venison doner.",
-      contact_email: "user2@gmail.com",
-    };
+    let { title, technologies, budget, description, contact_email } = req.body;
 
-    let { title, technologies, budget, description, contact_email } = data;
+    // server side validations
+    let errors = [];
+    !title && errors.push({ text: "Please add a Title" });
+    !technologies && errors.push({ text: "Please add some Technologies" });
+    !description && errors.push({ text: "Please add a Description" });
+    !contact_email && errors.push({ text: "Please add a Contact Email" });
 
-    // insert into table
-    await Gig.create({
-      title,
-      technologies,
-      budget,
-      description,
-      contact_email,
-    });
+    // check for errors
+    if (errors.length > 0) {
+      res.render("add", {
+        errors,
+        title,
+        technologies,
+        budget,
+        description,
+        contact_email,
+      });
+    } else {
+      // cleaning the inputs
+      if (!budget) {
+        budget = "Unknown";
+      } else {
+        budget = `$ ${budget}`;
+      }
 
-    res.redirect("/gigs");
+      technologies = technologies.toLowerCase().replace(/, /g, ",");
+
+      // insert into table
+      await Gig.create({
+        title,
+        technologies,
+        budget,
+        description,
+        contact_email,
+      });
+
+      res.redirect("/gigs");
+    }
   } catch (err) {
     console.log(er);
   }
